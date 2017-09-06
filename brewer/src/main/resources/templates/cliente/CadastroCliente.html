@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:data="http://www.thymeleaf.org/extras/data"
+	xmlns:brewer="http://brewer.softbit.com.br"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/LayoutPadrao}">
+
+<head></head>
+<body>
+	<section class="aw-layout-content  js-content" layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Cadastro de cliente</h1>
+					</div>
+					
+					<div class="col-xs-2">
+						<div class="aw-page-header-controls">
+							<a class="btn  btn-default" th:href="@{/clientes}">
+								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Pesquisa</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+
+			<form method="POST" th:object="${cliente}" th:action="@{/clientes/novo}" class="form-vertical">
+
+				<brewer:message/>
+				
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="form-group bw-required" brewer:classforerror="nome">
+							<label for="nome" class="control-label">Nome:</label> 
+							<input id="nome" type="text" class="form-control" th:field=*{nome}/>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-6 col-lg-4">
+						<div class="form-group bw-required" brewer:classforerror="tipoPessoa" >
+							<label class="control-label">Tipo:</label>
+							<div>
+								<th:block th:each="tipoPessoa : ${tiposPessoa}">
+									<div class="radio radio-inline">
+										<input th:id="|id_${tipoPessoa}|" type="radio" class="js-radio-tipo-pessoa" 
+											th:field=*{tipoPessoa} th:value=${tipoPessoa}
+											data:documento="${tipoPessoa.documento}" data:mascara="${tipoPessoa.mascara}"/> 
+										<label class="control-label" th:for="|id_${tipoPessoa}|" th:text="${tipoPessoa.descricao}">Pessoa Física</label>
+									</div>									
+								</th:block>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-sm-8">
+						<div class="form-group bw-required" brewer:classforerror="cpfOuCnpj">
+							<label class="control-label" for="cpfOuCnpj">CPF/CNPJ:</label> 
+							<input id="cpfOuCnpj" type="text" class="form-control" th:field="*{cpfOuCnpj}" disabled/>
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-sm-6 col-lg-4">
+						<div class="form-group">
+							<label for="telefone">Telefone:</label> 
+							<input id="telefone" type="text" class="form-control js-phone-number" th:field="*{telefone}"/>
+						</div>
+					</div>
+
+					<div class="col-sm-8">
+						<div class="form-group" brewer:classforerror="email">
+							<label for="email" class="control-label">E-mail:</label> 
+							<input id="email" type="text" class="form-control"  th:field="*{email}"/>
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-sm-6 col-lg-4">
+						<div class="form-group">
+							<label for="logradouro">Logradouro:</label> 
+							<input id="logradouro" type="text" class="form-control"  th:field="*{endereco.logradouro}"/>
+						</div>
+					</div>
+
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label for="numero">Número:</label> 
+							<input id="numero" type="text" class="form-control"  th:field="*{endereco.numero}"/>
+						</div>
+					</div>
+					
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label for="complemento">Complemento:</label> 
+							<input id="complemento" type="text" class="form-control"  th:field="*{endereco.complemento}"/>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label for="cep">CEP:</label> 
+							<input id="cep" type="text" class="form-control"  th:field="*{endereco.cep}"/>
+						</div>
+					</div>
+					
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label for="estado">Estado:</label> 
+							<select id="estado" class="form-control" th:field="*{endereco.estado}">
+								<option value="">Selecione o estado</option>
+								<option th:each="estado : ${estados}" th:value="${estado.codigo}" th:text="${estado.nome}">São Paulo</option>
+							</select>
+						</div>
+					</div>
+					
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label for="cidade">Cidade:</label> 
+							<div class="bw-field-action">
+							<input type="hidden" id="inputHiddenCidadeSelecionada" th:value="*{endereco.cidade} != null ? *{endereco.cidade.codigo}"/>
+								<select id="cidade" class="form-control" data:url=@{/cidades} th:field="*{endereco.cidade}"></select>
+								<div class="bw-field-action__icon js-img-loading" style="display: none">
+									<img th:src="@{/images/mini-loading.gif}"/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<button class="btn  btn-primary" type="submit">Salvar</button>
+				</div>
+
+			</form>
+		</div>
+		<div th:replace="estilo/CadastroRapidoEstilo :: modal"></div>
+	</section>
+	<th:block layout:fragment="javascript-extra">
+		<script th:src="@{/javascript/cliente-mascara-cpf-cnpj.js}"></script>
+		<script th:src="@{/javascript/cliente.combo-estado-cidade.js}"></script>
+	</th:block>
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/LayoutPadrao}">
+
+<head></head>
+<body>
+	<section class="aw-layout-content  js-content" layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Cadastro de estilos</h1>
+					</div>
+					
+					<div class="col-xs-2">
+						<div class="aw-page-header-controls">
+							<a class="btn  btn-default" th:href="@{/estilos}">
+								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Pesquisa</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+		
+			<div class="alert  alert-success  alert-dismissible" role="alert" th:if="${not #strings.isEmpty(mensagem)}">
+				<button type="button" class="close" data-dismiss="alert" ><span aria-hidden="true">&times;</span></button>
+				<span th:text="${mensagem}"></span>
+			</div>
+
+			<form method="POST" th:object="${estilo}" class="form-vertical  js-form-loading" th:action="@{/estilos/novo}">
+			
+				<div class="alert  alert-danger  alert-dismissible" role="alert" th:if="${#fields.hasAnyErrors()}">
+					<button type="button" class="close" data-dismiss="alert" ><span aria-hidden="true">&times;</span></button>
+					<th:block th:each="detailedError : ${#fields.detailedErrors()}">
+						<div><i class="fa  fa-exclamation-circle"></i> [[${detailedError.message}]].</div>
+					</th:block>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="form-group bw-required" th:classappend="${#fields.hasErrors('nome')} ? has-error">
+							<label for="nome" class="control-label">Nome:</label> 
+							<input id="nome" type="text" class="form-control" th:field=*{nome}/>
+						</div>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<button class="btn  btn-primary" type="submit">Salvar</button>
+				</div>
+			</form>
+		</div>
+	</section>
+</body>
+
+</html>
